@@ -23,7 +23,7 @@ type TranslationKey =
 
 type Translations = Record<TranslationKey, string>;
 
-type SupportedLanguage = 'en' | 'nb' | 'sv' | 'da' | 'de' | 'pl';
+type SupportedLanguage = 'en' | 'nb' | 'sv' | 'da' | 'de' | 'pl' | 'es' | 'pt';
 
 const translations: Record<SupportedLanguage, Translations> = {
   en: {
@@ -182,6 +182,58 @@ const translations: Record<SupportedLanguage, Translations> = {
     findAgain: 'Znajdź ponownie',
     lastSaved: 'Ostatnio zapisano:',
   },
+  es: {
+    unknownTime: 'hora desconocida',
+    todayAt: 'hoy, {time}',
+    loadErrorTitle: 'Algo salió mal',
+    loadErrorMessage: 'FindBack no pudo leer la posición guardada.',
+    permissionTitle: 'Se requiere acceso a la ubicación',
+    permissionMessage:
+      'FindBack necesita acceso a la ubicación para guardar dónde estás.',
+    cancel: 'Cancelar',
+    openSettings: 'Abrir ajustes',
+    locationErrorTitle: 'No se pudo obtener tu posición',
+    locationErrorMessage:
+      'Comprueba que los servicios de ubicación estén activados e inténtalo de nuevo.',
+    saveErrorTitle: 'No se pudo guardar la posición',
+    saveErrorMessage: 'Algo salió mal al guardar. Inténtalo de nuevo.',
+    mapErrorTitle: 'No se pudo abrir el mapa',
+    mapErrorMessage:
+      'FindBack no encontró una aplicación de mapas que pueda abrir la posición guardada.',
+    pinAccessibilityLabel: 'Marcador de ubicación de FindBack',
+    positionSaved: 'Posición guardada',
+    savePosition: 'Guardar posición',
+    gettingPosition: 'Obteniendo posición …',
+    overwritePrevious: '(reemplaza la posición guardada anteriormente)',
+    findAgain: 'Volver a encontrar',
+    lastSaved: 'Última vez guardado:',
+  },
+  pt: {
+    unknownTime: 'hora desconhecida',
+    todayAt: 'hoje, {time}',
+    loadErrorTitle: 'Algo correu mal',
+    loadErrorMessage: 'O FindBack não conseguiu ler a posição guardada.',
+    permissionTitle: 'É necessário acesso à localização',
+    permissionMessage:
+      'O FindBack precisa de acesso à localização para guardar onde está.',
+    cancel: 'Cancelar',
+    openSettings: 'Abrir definições',
+    locationErrorTitle: 'Não foi possível obter a sua posição',
+    locationErrorMessage:
+      'Verifique se os serviços de localização estão ativados e tente novamente.',
+    saveErrorTitle: 'Não foi possível guardar a posição',
+    saveErrorMessage: 'Algo correu mal ao guardar. Tente novamente.',
+    mapErrorTitle: 'Não foi possível abrir o mapa',
+    mapErrorMessage:
+      'O FindBack não encontrou uma aplicação de mapas que consiga abrir a posição guardada.',
+    pinAccessibilityLabel: 'Alfinete de localização do FindBack',
+    positionSaved: 'Posição guardada',
+    savePosition: 'Guardar posição',
+    gettingPosition: 'A obter posição …',
+    overwritePrevious: '(substitui a posição guardada anteriormente)',
+    findAgain: 'Encontrar novamente',
+    lastSaved: 'Última gravação:',
+  },
 };
 
 function getDeviceLocale(): string {
@@ -199,7 +251,14 @@ function resolveLanguage(locale: string): SupportedLanguage {
     return 'nb';
   }
 
-  if (language === 'sv' || language === 'da' || language === 'de' || language === 'pl') {
+  if (
+    language === 'sv' ||
+    language === 'da' ||
+    language === 'de' ||
+    language === 'pl' ||
+    language === 'es' ||
+    language === 'pt'
+  ) {
     return language;
   }
 
