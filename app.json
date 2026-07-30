@@ -4,7 +4,7 @@
     "slug": "findback",
     "version": "0.1.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/findback-icon.png",
     "scheme": "findback",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -22,17 +22,15 @@
         "ACCESS_FINE_LOCATION"
       ],
       "adaptiveIcon": {
-        "backgroundColor": "#F6F5F2",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#0866E8",
+        "foregroundImage": "./assets/images/findback-icon.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/findback-icon.png"
     },
     "plugins": [
       "expo-router",
@@ -45,12 +43,12 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/images/findback-pin.png",
+          "imageWidth": 220,
           "resizeMode": "contain",
-          "backgroundColor": "#F6F5F2",
+          "backgroundColor": "#0866E8",
           "dark": {
-            "backgroundColor": "#17211C"
+            "backgroundColor": "#0866E8"
           }
         }
       ]
