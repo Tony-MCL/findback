@@ -7,15 +7,14 @@ export async function openSavedLocationInMaps(
 ): Promise<void> {
   const coordinates = `${location.latitude},${location.longitude}`;
 
-  const url =
-    Platform.OS === 'ios'
-      ? `http://maps.apple.com/?daddr=${coordinates}&dirflg=d`
-      : `https://www.google.com/maps/dir/?api=1&destination=${coordinates}`;
+  const url = Platform.select({
+    ios: `http://maps.apple.com/?daddr=${coordinates}&dirflg=d`,
+    android: `google.navigation:q=${coordinates}&mode=d`,
+    default: `https://www.google.com/maps/dir/?api=1&destination=${coordinates}`,
+  });
 
-  const canOpen = await Linking.canOpenURL(url);
-
-  if (!canOpen) {
-    throw new Error('No supported maps app is available.');
+  if (!url) {
+    throw new Error('No supported maps URL is available.');
   }
 
   await Linking.openURL(url);
