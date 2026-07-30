@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 
+import InfoModal from '@/components/InfoModal';
 import { locale, t } from '@/i18n';
 import { getCurrentLocation } from '@/services/location-service';
 import { getSavedLocation, saveLocation } from '@/services/location-storage';
@@ -56,6 +57,7 @@ export default function HomeScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isToastVisible, setIsToastVisible] = useState(false);
+  const [isInfoVisible, setIsInfoVisible] = useState(false);
   const toastOpacity = useRef(new Animated.Value(0)).current;
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -171,6 +173,16 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('infoAccessibilityLabel')}
+          hitSlop={12}
+          style={({ pressed }) => [styles.infoButton, pressed && styles.infoButtonPressed]}
+          onPress={() => setIsInfoVisible(true)}
+        >
+          <Text style={styles.infoButtonText}>i</Text>
+        </Pressable>
+
         <View style={styles.pinArea}>
           <Image
             source={require('@/assets/images/findback-pin.png')}
@@ -240,18 +252,47 @@ export default function HomeScreen() {
 
         <Text style={styles.footer}>© Morning Coffee Labs</Text>
       </View>
+
+      <InfoModal visible={isInfoVisible} onClose={() => setIsInfoVisible(false)} />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#0866E8' },
-  container: { flex: 1, paddingHorizontal: 24, paddingTop: 20, paddingBottom: 28 },
+  container: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 28,
+  },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#0866E8',
+  },
+  infoButton: {
+    position: 'absolute',
+    top: 18,
+    right: 22,
+    zIndex: 20,
+    width: 42,
+    height: 42,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+    borderRadius: 21,
+    backgroundColor: 'rgba(8, 46, 104, 0.28)',
+  },
+  infoButtonPressed: { opacity: 0.7, transform: [{ scale: 0.96 }] },
+  infoButtonText: {
+    color: '#FFFFFF',
+    fontSize: 26,
+    lineHeight: 30,
+    fontWeight: '800',
+    textAlign: 'center',
   },
   pinArea: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 250 },
   pinImage: { width: '84%', maxWidth: 390, height: 360 },
