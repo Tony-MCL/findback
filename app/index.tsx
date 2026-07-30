@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Animated,
   Image,
   Linking,
   Pressable,
@@ -18,6 +19,8 @@ import {
 } from '@/services/location-storage';
 import { openSavedLocationInMaps } from '@/services/map-navigation';
 import type { SavedLocation } from '@/types/saved-location';
+
+const TOAST_DURATION_MS = 2500;
 
 function formatSavedAt(savedAt: string): string {
   const date = new Date(savedAt);
@@ -55,6 +58,9 @@ export default function HomeScreen() {
     useState<SavedLocation | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isToastVisible, setIsToastVisible] = useState(false);
+  const toastOpacity = useRef(new Animated.Value(0)).current;
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     async function loadSavedLocation() {
@@ -73,6 +79,41 @@ export default function HomeScreen() {
 
     void loadSavedLocation();
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimer.current) {
+        clearTimeout(toastTimer.current);
+      }
+    };
+  }, []);
+
+  function showSavedToast() {
+    if (toastTimer.current) {
+      clearTimeout(toastTimer.current);
+    }
+
+    setIsToastVisible(true);
+    toastOpacity.setValue(0);
+
+    Animated.timing(toastOpacity, {
+      toValue: 1,
+      duration: 180,
+      useNativeDriver: true,
+    }).start();
+
+    toastTimer.current = setTimeout(() => {
+      Animated.timing(toastOpacity, {
+        toValue: 0,
+        duration: 180,
+        useNativeDriver: true,
+      }).start(({ finished }) => {
+        if (finished) {
+          setIsToastVisible(false);
+        }
+      });
+    }, TOAST_DURATION_MS);
+  }
 
   async function handleSaveLocation() {
     if (isSaving) {
@@ -116,7 +157,7 @@ export default function HomeScreen() {
 
       await saveLocation(result.location);
       setSavedLocation(result.location);
-      Alert.alert('Sted lagret');
+      showSavedToast();
     } catch {
       Alert.alert(
         'Kunne ikke lagre stedet',
@@ -165,6 +206,21 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.content}>
+          {isToastVisible ? (
+            <Animated.View
+              pointerEvents="none"
+              style={[styles.toast, { opacity: toastOpacity }]}
+            >
+              <Image
+                source={require('@/assets/images/findback-pin.png')}
+                style={styles.toastIcon}
+                resizeMode="contain"
+                accessibilityIgnoresInvertColors
+              />
+              <Text style={styles.toastText}>Posisjon lagret</Text>
+            </Animated.View>
+          ) : null}
+
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Lagre posisjon"
@@ -235,8 +291,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 28,
-    paddingBottom: 18,
+    paddingTop: 20,
+    paddingBottom: 28,
   },
   loadingContainer: {
     flex: 1,
@@ -248,15 +304,42 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 220,
+    minHeight: 250,
   },
   pinImage: {
-    width: '72%',
-    maxWidth: 320,
-    height: 300,
+    width: '84%',
+    maxWidth: 390,
+    height: 360,
   },
   content: {
     gap: 14,
+  },
+  toast: {
+    alignSelf: 'center',
+    minHeight: 64,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    borderRadius: 20,
+    backgroundColor: '#082E68',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    shadowColor: '#001F4E',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.22,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  toastIcon: {
+    width: 34,
+    height: 42,
+  },
+  toastText: {
+    color: '#FFFFFF',
+    fontSize: 21,
+    fontWeight: '700',
+    textAlign: 'center',
   },
   saveButton: {
     minHeight: 92,
