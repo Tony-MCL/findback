@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Image,
   Linking,
   Pressable,
   SafeAreaView,
@@ -12,19 +13,48 @@ import {
 
 import { getCurrentLocation } from '@/services/location-service';
 import {
-  deleteSavedLocation,
   getSavedLocation,
   saveLocation,
 } from '@/services/location-storage';
-import type { SavedLocation } from '@/types/saved-location';
 import { openSavedLocationInMaps } from '@/services/map-navigation';
+import type { SavedLocation } from '@/types/saved-location';
+
+function formatSavedAt(savedAt: string): string {
+  const date = new Date(savedAt);
+
+  if (Number.isNaN(date.getTime())) {
+    return 'ukjent tidspunkt';
+  }
+
+  const today = new Date();
+  const isToday =
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate();
+
+  const time = new Intl.DateTimeFormat('nb-NO', {
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+
+  if (isToday) {
+    return `i dag, ${time}`;
+  }
+
+  const day = new Intl.DateTimeFormat('nb-NO', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(date);
+
+  return `${day}, ${time}`;
+}
 
 export default function HomeScreen() {
   const [savedLocation, setSavedLocation] =
     useState<SavedLocation | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     async function loadSavedLocation() {
@@ -58,7 +88,7 @@ export default function HomeScreen() {
         if (result.reason === 'permission-denied') {
           Alert.alert(
             'Posisjonstilgang er nødvendig',
-            'FindBack trenger posisjonstilgang for å kunne huske stedet du befinner deg på.',
+            'FindBack trenger posisjonstilgang for å kunne lagre stedet du befinner deg på.',
             [
               {
                 text: 'Avbryt',
@@ -86,7 +116,6 @@ export default function HomeScreen() {
 
       await saveLocation(result.location);
       setSavedLocation(result.location);
-
       Alert.alert('Sted lagret');
     } catch {
       Alert.alert(
@@ -98,23 +127,18 @@ export default function HomeScreen() {
     }
   }
 
-  async function handleDeleteLocation() {
-    if (isDeleting) {
+  async function handleOpenMap() {
+    if (!savedLocation) {
       return;
     }
 
-    setIsDeleting(true);
-
     try {
-      await deleteSavedLocation();
-      setSavedLocation(null);
+      await openSavedLocationInMaps(savedLocation);
     } catch {
       Alert.alert(
-        'Kunne ikke slette stedet',
-        'Noe gikk galt. Prøv igjen.',
+        'Kunne ikke åpne kart',
+        'FindBack fant ingen kartapp som kunne åpne den lagrede posisjonen.',
       );
-    } finally {
-      setIsDeleting(false);
     }
   }
 
@@ -122,7 +146,7 @@ export default function HomeScreen() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" />
+          <ActivityIndicator size="large" color="#FFFFFF" />
         </View>
       </SafeAreaView>
     );
@@ -131,88 +155,73 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>FindBack</Text>
-          <Text style={styles.subtitle}>
-            Never wonder where again.
-          </Text>
+        <View style={styles.pinArea}>
+          <Image
+            source={require('@/assets/images/findback-pin.png')}
+            style={styles.pinImage}
+            resizeMode="contain"
+            accessibilityLabel="FindBack-posisjonsnål"
+          />
         </View>
 
-        <View style={styles.actions}>
-          {savedLocation ? (
-            <>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Ta meg tilbake"
-                style={({ pressed }) => [
-                  styles.primaryButton,
-                  pressed && styles.buttonPressed,
-                ]}
-                onPress={() => {
-                  void openSavedLocationInMaps(savedLocation).catch(() => {
-                    Alert.alert(
-                      'Kunne ikke åpne kart',
-                      'FindBack fant ingen kartapp som kunne åpne den lagrede posisjonen.',
-                    );
-                  });
-                }}
-              >
-                <Text style={styles.primaryButtonText}>
-                  🧭 Ta meg tilbake
-                </Text>
-              </Pressable>
-
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Slett lagret sted"
-                disabled={isDeleting}
-                style={({ pressed }) => [
-                  styles.deleteButton,
-                  pressed && styles.buttonPressed,
-                  isDeleting && styles.buttonDisabled,
-                ]}
-                onPress={() => {
-                  void handleDeleteLocation();
-                }}
-              >
-                {isDeleting ? (
-                  <ActivityIndicator />
-                ) : (
-                  <Text style={styles.deleteButtonText}>
-                    🗑️ Slett sted
+        <View style={styles.content}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Lagre posisjon"
+            disabled={isSaving}
+            style={({ pressed }) => [
+              styles.saveButton,
+              pressed && styles.buttonPressed,
+              isSaving && styles.buttonDisabled,
+            ]}
+            onPress={() => {
+              void handleSaveLocation();
+            }}
+          >
+            {isSaving ? (
+              <View style={styles.buttonLoadingContent}>
+                <ActivityIndicator color="#0D3B84" />
+                <Text style={styles.saveButtonTitle}>Henter posisjon …</Text>
+              </View>
+            ) : (
+              <>
+                <Text style={styles.saveButtonTitle}>Lagre posisjon</Text>
+                {savedLocation ? (
+                  <Text style={styles.saveButtonSubtitle}>
+                    (overskriver tidligere lagret sted)
                   </Text>
-                )}
-              </Pressable>
-            </>
-          ) : (
+                ) : null}
+              </>
+            )}
+          </Pressable>
+
+          {savedLocation ? (
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Husk sted"
-              disabled={isSaving}
+              accessibilityLabel="Finn igjen"
               style={({ pressed }) => [
-                styles.primaryButton,
+                styles.findButton,
                 pressed && styles.buttonPressed,
-                isSaving && styles.buttonDisabled,
               ]}
               onPress={() => {
-                void handleSaveLocation();
+                void handleOpenMap();
               }}
             >
-              {isSaving ? (
-                <View style={styles.savingContent}>
-                  <ActivityIndicator color="#FFFFFF" />
-                  <Text style={styles.primaryButtonText}>
-                    Henter posisjon …
-                  </Text>
-                </View>
-              ) : (
-                <Text style={styles.primaryButtonText}>
-                  📍 Husk sted
-                </Text>
-              )}
+              <Text style={styles.findButtonTitle}>Finn igjen</Text>
             </Pressable>
-          )}
+          ) : null}
+
+          {savedLocation ? (
+            <View style={styles.savedStatus}>
+              <Text style={styles.savedStatusLabel}>Sist lagret:</Text>
+              <Text style={styles.savedStatusValue}>
+                {formatSavedAt(savedLocation.savedAt)}
+              </Text>
+            </View>
+          ) : null}
         </View>
+
+        <Text style={styles.footer}>© Morning Coffee Labs</Text>
       </View>
     </SafeAreaView>
   );
@@ -221,74 +230,113 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F6F5F2',
+    backgroundColor: '#0866E8',
   },
   container: {
     flex: 1,
-    justifyContent: 'space-between',
     paddingHorizontal: 24,
-    paddingTop: 64,
-    paddingBottom: 32,
+    paddingTop: 28,
+    paddingBottom: 18,
   },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#0866E8',
   },
-  header: {
-    alignItems: 'center',
-  },
-  title: {
-    color: '#17211C',
-    fontSize: 42,
-    fontWeight: '700',
-    letterSpacing: -1.5,
-  },
-  subtitle: {
-    marginTop: 8,
-    color: '#667069',
-    fontSize: 17,
-  },
-  actions: {
-    gap: 12,
-  },
-  primaryButton: {
-    minHeight: 64,
+  pinArea: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 18,
-    backgroundColor: '#1E6B4E',
-    paddingHorizontal: 24,
+    minHeight: 220,
+  },
+  pinImage: {
+    width: '72%',
+    maxWidth: 320,
+    height: 300,
+  },
+  content: {
+    gap: 14,
+  },
+  saveButton: {
+    minHeight: 92,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 24,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 20,
     paddingVertical: 16,
+    shadowColor: '#001F4E',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.22,
+    shadowRadius: 12,
+    elevation: 8,
   },
-  deleteButton: {
-    minHeight: 58,
+  findButton: {
+    minHeight: 82,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 18,
-    backgroundColor: '#E7E4DE',
-    paddingHorizontal: 24,
-    paddingVertical: 14,
+    borderRadius: 24,
+    backgroundColor: '#082E68',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    shadowColor: '#001F4E',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 7,
   },
   buttonPressed: {
-    opacity: 0.82,
+    opacity: 0.84,
+    transform: [{ scale: 0.99 }],
   },
   buttonDisabled: {
-    opacity: 0.65,
+    opacity: 0.68,
   },
-  primaryButtonText: {
-    color: '#FFFFFF',
-    fontSize: 20,
-    fontWeight: '700',
-  },
-  deleteButtonText: {
-    color: '#39423D',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  savingContent: {
+  buttonLoadingContent: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+  },
+  saveButtonTitle: {
+    color: '#0A3475',
+    fontSize: 27,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  saveButtonSubtitle: {
+    marginTop: 5,
+    color: '#1567C8',
+    fontSize: 15,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  findButtonTitle: {
+    color: '#FFFFFF',
+    fontSize: 28,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  savedStatus: {
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  savedStatusLabel: {
+    color: '#FFFFFF',
+    fontSize: 17,
+    fontWeight: '600',
+  },
+  savedStatusValue: {
+    marginTop: 2,
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '400',
+  },
+  footer: {
+    marginTop: 20,
+    color: '#FFFFFF',
+    fontSize: 14,
+    textAlign: 'center',
+    opacity: 0.92,
   },
 });
