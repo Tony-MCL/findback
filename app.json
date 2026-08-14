@@ -14,7 +14,9 @@
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "FindBack uses your location to save the place you want to return to.",
         "CFBundleAllowMixedLocalizations": true,
-        "CFBundleDevelopmentRegion": "en"
+        "CFBundleDevelopmentRegion": "en",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "FindBack uses your location to save the place you want to return to.",
+        "NSLocationAlwaysUsageDescription": "FindBack uses your location to save the place you want to return to."
       }
     },
     "android": {
