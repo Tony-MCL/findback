@@ -12,7 +12,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.morningcoffeelabs.findback",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "FindBack bruker posisjonen din for å lagre stedet du ønsker å finne tilbake til."
+        "NSLocationWhenInUseUsageDescription": "FindBack uses your location to save the place you want to return to.",
+        "CFBundleAllowMixedLocalizations": true,
+        "CFBundleDevelopmentRegion": "en"
       }
     },
     "android": {
@@ -37,7 +39,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "FindBack bruker posisjonen din for å lagre stedet du ønsker å finne tilbake til."
+          "locationWhenInUsePermission": "FindBack uses your location to save the place you want to return to."
         }
       ],
       [
@@ -56,6 +58,16 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "locales": {
+      "en": "./locales/en.json",
+      "nb": "./locales/nb.json",
+      "sv": "./locales/sv.json",
+      "da": "./locales/da.json",
+      "de": "./locales/de.json",
+      "pl": "./locales/pl.json",
+      "es": "./locales/es.json",
+      "pt": "./locales/pt.json"
     }
   }
 }
