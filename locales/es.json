@@ -1,0 +1,9 @@
+{
+  "ios": {
+    "CFBundleDisplayName": "FindBack",
+    "NSLocationWhenInUseUsageDescription": "FindBack usa tu ubicación para guardar el lugar al que quieres volver."
+  },
+  "android": {
+    "app_name": "FindBack"
+  }
+}
