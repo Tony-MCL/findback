@@ -29,7 +29,38 @@ type TranslationKey =
   | 'website'
   | 'close'
   | 'linkErrorTitle'
-  | 'linkErrorMessage';
+  | 'linkErrorMessage'
+  | 'favoritesAccessibilityLabel'
+  | 'favoritesTitle'
+  | 'savedFavorites'
+  | 'favoritesEmpty'
+  | 'favoriteGesturesHint'
+  | 'longPressToRename'
+  | 'addLastSaved'
+  | 'addCurrent'
+  | 'favoriteDeleted'
+  | 'undo'
+  | 'renameFavorite'
+  | 'favoriteName'
+  | 'save'
+  | 'favoritesErrorTitle'
+  | 'favoritesLoadError'
+  | 'favoritesSaveError'
+  | 'purchaseTitle'
+  | 'purchaseBody'
+  | 'unlimitedFavorites'
+  | 'oneTimePurchase'
+  | 'noSubscription'
+  | 'buyFor'
+  | 'storeLoading'
+  | 'restorePurchases'
+  | 'notNow'
+  | 'purchaseErrorTitle'
+  | 'purchaseErrorMessage'
+  | 'restoreSuccessTitle'
+  | 'restoreSuccessMessage'
+  | 'restoreNotFoundTitle'
+  | 'restoreNotFoundMessage';
 
 type Translations = Record<TranslationKey, string>;
 
@@ -68,6 +99,18 @@ const translations: Record<SupportedLanguage, Translations> = {
     close: 'Close',
     linkErrorTitle: 'Could not open the link',
     linkErrorMessage: 'Please try again later.',
+    favoritesAccessibilityLabel: 'Favorites', favoritesTitle: 'Favorites', savedFavorites: 'Saved favorites',
+    favoritesEmpty: 'No favorites yet. Add your last saved or current position below.',
+    favoriteGesturesHint: 'Tap to open · Hold to rename · Swipe left to delete', longPressToRename: 'Hold to rename',
+    addLastSaved: 'Add last saved position', addCurrent: 'Add current position', favoriteDeleted: '{name} deleted', undo: 'Undo',
+    renameFavorite: 'Rename favorite', favoriteName: 'Favorite name', save: 'Save',
+    favoritesErrorTitle: 'Could not update favorites', favoritesLoadError: 'FindBack could not read your favorites.', favoritesSaveError: 'FindBack could not save the change. Try again.',
+    purchaseTitle: 'FindBack Favorites', purchaseBody: 'Save all the places you want to find back to.',
+    unlimitedFavorites: 'Unlimited favorite positions', oneTimePurchase: 'One-time purchase', noSubscription: 'No subscription',
+    buyFor: 'Buy for {price}', storeLoading: 'Loading store price …', restorePurchases: 'Restore purchase', notNow: 'Not now',
+    purchaseErrorTitle: 'Purchase could not be completed', purchaseErrorMessage: 'Check your connection and try again.',
+    restoreSuccessTitle: 'Purchase restored', restoreSuccessMessage: 'Favorites is now unlocked.',
+    restoreNotFoundTitle: 'No purchase found', restoreNotFoundMessage: 'The store found no previous Favorites purchase for this account.',
   },
   nb: {
     unknownTime: 'ukjent tidspunkt',
@@ -101,6 +144,18 @@ const translations: Record<SupportedLanguage, Translations> = {
     close: 'Lukk',
     linkErrorTitle: 'Kunne ikke åpne lenken',
     linkErrorMessage: 'Prøv igjen senere.',
+    favoritesAccessibilityLabel: 'Favorittsteder', favoritesTitle: 'Favorittsteder', savedFavorites: 'Lagrede favoritter',
+    favoritesEmpty: 'Ingen favoritter ennå. Legg til sist lagrede eller nåværende posisjon nedenfor.',
+    favoriteGesturesHint: 'Trykk for å åpne · Hold for å endre navn · Sveip mot venstre for å slette', longPressToRename: 'Hold for å endre navn',
+    addLastSaved: 'Legg til sist lagrede posisjon', addCurrent: 'Legg til nåværende posisjon', favoriteDeleted: '{name} slettet', undo: 'Angre',
+    renameFavorite: 'Endre navn på favoritt', favoriteName: 'Navn på favoritt', save: 'Lagre',
+    favoritesErrorTitle: 'Kunne ikke oppdatere favoritter', favoritesLoadError: 'FindBack kunne ikke lese favorittene dine.', favoritesSaveError: 'FindBack kunne ikke lagre endringen. Prøv igjen.',
+    purchaseTitle: 'FindBack Favoritter', purchaseBody: 'Lagre alle stedene du ønsker å finne tilbake til.',
+    unlimitedFavorites: 'Ubegrenset antall favorittsteder', oneTimePurchase: 'Engangskjøp', noSubscription: 'Ingen abonnement',
+    buyFor: 'Kjøp for {price}', storeLoading: 'Henter pris fra butikken …', restorePurchases: 'Gjenopprett kjøp', notNow: 'Ikke nå',
+    purchaseErrorTitle: 'Kjøpet kunne ikke fullføres', purchaseErrorMessage: 'Kontroller tilkoblingen og prøv igjen.',
+    restoreSuccessTitle: 'Kjøpet er gjenopprettet', restoreSuccessMessage: 'Favoritter er nå låst opp.',
+    restoreNotFoundTitle: 'Fant ingen kjøp', restoreNotFoundMessage: 'Butikken fant ikke noe tidligere Favoritter-kjøp for denne kontoen.',
   },
   sv: {
     unknownTime: 'okänd tidpunkt',
@@ -134,6 +189,18 @@ const translations: Record<SupportedLanguage, Translations> = {
     close: 'Stäng',
     linkErrorTitle: 'Kunde inte öppna länken',
     linkErrorMessage: 'Försök igen senare.',
+    favoritesAccessibilityLabel: 'Favoritplatser', favoritesTitle: 'Favoritplatser', savedFavorites: 'Sparade favoriter',
+    favoritesEmpty: 'Inga favoriter ännu. Lägg till din senast sparade eller aktuella position nedan.',
+    favoriteGesturesHint: 'Tryck för att öppna · Håll för att byta namn · Svep åt vänster för att radera', longPressToRename: 'Håll för att byta namn',
+    addLastSaved: 'Lägg till senast sparade position', addCurrent: 'Lägg till aktuell position', favoriteDeleted: '{name} raderad', undo: 'Ångra',
+    renameFavorite: 'Byt namn på favorit', favoriteName: 'Favoritens namn', save: 'Spara',
+    favoritesErrorTitle: 'Kunde inte uppdatera favoriter', favoritesLoadError: 'FindBack kunde inte läsa dina favoriter.', favoritesSaveError: 'FindBack kunde inte spara ändringen. Försök igen.',
+    purchaseTitle: 'FindBack Favoriter', purchaseBody: 'Spara alla platser du vill hitta tillbaka till.',
+    unlimitedFavorites: 'Obegränsat antal favoritplatser', oneTimePurchase: 'Engångsköp', noSubscription: 'Ingen prenumeration',
+    buyFor: 'Köp för {price}', storeLoading: 'Hämtar butikspris …', restorePurchases: 'Återställ köp', notNow: 'Inte nu',
+    purchaseErrorTitle: 'Köpet kunde inte slutföras', purchaseErrorMessage: 'Kontrollera anslutningen och försök igen.',
+    restoreSuccessTitle: 'Köpet har återställts', restoreSuccessMessage: 'Favoriter är nu upplåst.',
+    restoreNotFoundTitle: 'Inget köp hittades', restoreNotFoundMessage: 'Butiken hittade inget tidigare köp av Favoriter för det här kontot.',
   },
   da: {
     unknownTime: 'ukendt tidspunkt',
@@ -167,6 +234,18 @@ const translations: Record<SupportedLanguage, Translations> = {
     close: 'Luk',
     linkErrorTitle: 'Kunne ikke åbne linket',
     linkErrorMessage: 'Prøv igen senere.',
+    favoritesAccessibilityLabel: 'Favoritsteder', favoritesTitle: 'Favoritsteder', savedFavorites: 'Gemte favoritter',
+    favoritesEmpty: 'Ingen favoritter endnu. Tilføj din senest gemte eller aktuelle position nedenfor.',
+    favoriteGesturesHint: 'Tryk for at åbne · Hold for at omdøbe · Stryg mod venstre for at slette', longPressToRename: 'Hold for at omdøbe',
+    addLastSaved: 'Tilføj senest gemte position', addCurrent: 'Tilføj aktuel position', favoriteDeleted: '{name} slettet', undo: 'Fortryd',
+    renameFavorite: 'Omdøb favorit', favoriteName: 'Favorittens navn', save: 'Gem',
+    favoritesErrorTitle: 'Kunne ikke opdatere favoritter', favoritesLoadError: 'FindBack kunne ikke læse dine favoritter.', favoritesSaveError: 'FindBack kunne ikke gemme ændringen. Prøv igen.',
+    purchaseTitle: 'FindBack Favoritter', purchaseBody: 'Gem alle de steder, du vil kunne finde tilbage til.',
+    unlimitedFavorites: 'Ubegrænset antal favoritsteder', oneTimePurchase: 'Engangskøb', noSubscription: 'Intet abonnement',
+    buyFor: 'Køb for {price}', storeLoading: 'Henter butikspris …', restorePurchases: 'Gendan køb', notNow: 'Ikke nu',
+    purchaseErrorTitle: 'Købet kunne ikke gennemføres', purchaseErrorMessage: 'Kontrollér forbindelsen, og prøv igen.',
+    restoreSuccessTitle: 'Købet er gendannet', restoreSuccessMessage: 'Favoritter er nu låst op.',
+    restoreNotFoundTitle: 'Intet køb fundet', restoreNotFoundMessage: 'Butikken fandt intet tidligere Favoritter-køb for denne konto.',
   },
   de: {
     unknownTime: 'unbekannter Zeitpunkt',
@@ -200,6 +279,18 @@ const translations: Record<SupportedLanguage, Translations> = {
     close: 'Schließen',
     linkErrorTitle: 'Link konnte nicht geöffnet werden',
     linkErrorMessage: 'Bitte versuche es später erneut.',
+    favoritesAccessibilityLabel: 'Favoriten', favoritesTitle: 'Favoriten', savedFavorites: 'Gespeicherte Favoriten',
+    favoritesEmpty: 'Noch keine Favoriten. Füge unten die zuletzt gespeicherte oder aktuelle Position hinzu.',
+    favoriteGesturesHint: 'Tippen zum Öffnen · Halten zum Umbenennen · Nach links wischen zum Löschen', longPressToRename: 'Halten zum Umbenennen',
+    addLastSaved: 'Zuletzt gespeicherte Position hinzufügen', addCurrent: 'Aktuelle Position hinzufügen', favoriteDeleted: '{name} gelöscht', undo: 'Rückgängig',
+    renameFavorite: 'Favorit umbenennen', favoriteName: 'Name des Favoriten', save: 'Speichern',
+    favoritesErrorTitle: 'Favoriten konnten nicht aktualisiert werden', favoritesLoadError: 'FindBack konnte deine Favoriten nicht lesen.', favoritesSaveError: 'FindBack konnte die Änderung nicht speichern. Versuche es erneut.',
+    purchaseTitle: 'FindBack Favoriten', purchaseBody: 'Speichere alle Orte, zu denen du zurückfinden möchtest.',
+    unlimitedFavorites: 'Unbegrenzte Favoriten', oneTimePurchase: 'Einmaliger Kauf', noSubscription: 'Kein Abonnement',
+    buyFor: 'Für {price} kaufen', storeLoading: 'Store-Preis wird geladen …', restorePurchases: 'Kauf wiederherstellen', notNow: 'Nicht jetzt',
+    purchaseErrorTitle: 'Kauf konnte nicht abgeschlossen werden', purchaseErrorMessage: 'Prüfe deine Verbindung und versuche es erneut.',
+    restoreSuccessTitle: 'Kauf wiederhergestellt', restoreSuccessMessage: 'Favoriten ist jetzt freigeschaltet.',
+    restoreNotFoundTitle: 'Kein Kauf gefunden', restoreNotFoundMessage: 'Der Store hat für dieses Konto keinen früheren Favoriten-Kauf gefunden.',
   },
   pl: {
     unknownTime: 'nieznany czas',
@@ -233,6 +324,18 @@ const translations: Record<SupportedLanguage, Translations> = {
     close: 'Zamknij',
     linkErrorTitle: 'Nie udało się otworzyć linku',
     linkErrorMessage: 'Spróbuj ponownie później.',
+    favoritesAccessibilityLabel: 'Ulubione miejsca', favoritesTitle: 'Ulubione miejsca', savedFavorites: 'Zapisane ulubione',
+    favoritesEmpty: 'Nie masz jeszcze ulubionych. Dodaj poniżej ostatnią zapisaną lub bieżącą pozycję.',
+    favoriteGesturesHint: 'Dotknij, aby otworzyć · Przytrzymaj, aby zmienić nazwę · Przesuń w lewo, aby usunąć', longPressToRename: 'Przytrzymaj, aby zmienić nazwę',
+    addLastSaved: 'Dodaj ostatnią zapisaną pozycję', addCurrent: 'Dodaj bieżącą pozycję', favoriteDeleted: 'Usunięto {name}', undo: 'Cofnij',
+    renameFavorite: 'Zmień nazwę ulubionego', favoriteName: 'Nazwa ulubionego', save: 'Zapisz',
+    favoritesErrorTitle: 'Nie udało się zaktualizować ulubionych', favoritesLoadError: 'FindBack nie mógł odczytać ulubionych.', favoritesSaveError: 'FindBack nie mógł zapisać zmiany. Spróbuj ponownie.',
+    purchaseTitle: 'Ulubione FindBack', purchaseBody: 'Zapisuj wszystkie miejsca, do których chcesz wrócić.',
+    unlimitedFavorites: 'Nieograniczona liczba ulubionych miejsc', oneTimePurchase: 'Jednorazowy zakup', noSubscription: 'Bez subskrypcji',
+    buyFor: 'Kup za {price}', storeLoading: 'Pobieranie ceny ze sklepu …', restorePurchases: 'Przywróć zakup', notNow: 'Nie teraz',
+    purchaseErrorTitle: 'Nie udało się dokończyć zakupu', purchaseErrorMessage: 'Sprawdź połączenie i spróbuj ponownie.',
+    restoreSuccessTitle: 'Zakup przywrócony', restoreSuccessMessage: 'Ulubione są teraz odblokowane.',
+    restoreNotFoundTitle: 'Nie znaleziono zakupu', restoreNotFoundMessage: 'Sklep nie znalazł wcześniejszego zakupu Ulubionych dla tego konta.',
   },
   es: {
     unknownTime: 'hora desconocida',
@@ -266,6 +369,18 @@ const translations: Record<SupportedLanguage, Translations> = {
     close: 'Cerrar',
     linkErrorTitle: 'No se pudo abrir el enlace',
     linkErrorMessage: 'Inténtalo de nuevo más tarde.',
+    favoritesAccessibilityLabel: 'Lugares favoritos', favoritesTitle: 'Lugares favoritos', savedFavorites: 'Favoritos guardados',
+    favoritesEmpty: 'Aún no hay favoritos. Añade abajo la última posición guardada o la actual.',
+    favoriteGesturesHint: 'Toca para abrir · Mantén pulsado para renombrar · Desliza a la izquierda para eliminar', longPressToRename: 'Mantén pulsado para renombrar',
+    addLastSaved: 'Añadir última posición guardada', addCurrent: 'Añadir posición actual', favoriteDeleted: '{name} eliminado', undo: 'Deshacer',
+    renameFavorite: 'Renombrar favorito', favoriteName: 'Nombre del favorito', save: 'Guardar',
+    favoritesErrorTitle: 'No se pudieron actualizar los favoritos', favoritesLoadError: 'FindBack no pudo leer tus favoritos.', favoritesSaveError: 'FindBack no pudo guardar el cambio. Inténtalo de nuevo.',
+    purchaseTitle: 'Favoritos de FindBack', purchaseBody: 'Guarda todos los lugares a los que quieras volver.',
+    unlimitedFavorites: 'Lugares favoritos ilimitados', oneTimePurchase: 'Compra única', noSubscription: 'Sin suscripción',
+    buyFor: 'Comprar por {price}', storeLoading: 'Cargando precio de la tienda …', restorePurchases: 'Restaurar compra', notNow: 'Ahora no',
+    purchaseErrorTitle: 'No se pudo completar la compra', purchaseErrorMessage: 'Comprueba la conexión e inténtalo de nuevo.',
+    restoreSuccessTitle: 'Compra restaurada', restoreSuccessMessage: 'Favoritos ya está desbloqueado.',
+    restoreNotFoundTitle: 'No se encontró ninguna compra', restoreNotFoundMessage: 'La tienda no encontró una compra anterior de Favoritos para esta cuenta.',
   },
   pt: {
     unknownTime: 'hora desconhecida',
@@ -299,6 +414,18 @@ const translations: Record<SupportedLanguage, Translations> = {
     close: 'Fechar',
     linkErrorTitle: 'Não foi possível abrir a ligação',
     linkErrorMessage: 'Tente novamente mais tarde.',
+    favoritesAccessibilityLabel: 'Locais favoritos', favoritesTitle: 'Locais favoritos', savedFavorites: 'Favoritos guardados',
+    favoritesEmpty: 'Ainda não existem favoritos. Adicione abaixo a última posição guardada ou a atual.',
+    favoriteGesturesHint: 'Toque para abrir · Mantenha premido para mudar o nome · Deslize para a esquerda para eliminar', longPressToRename: 'Mantenha premido para mudar o nome',
+    addLastSaved: 'Adicionar última posição guardada', addCurrent: 'Adicionar posição atual', favoriteDeleted: '{name} eliminado', undo: 'Anular',
+    renameFavorite: 'Mudar nome do favorito', favoriteName: 'Nome do favorito', save: 'Guardar',
+    favoritesErrorTitle: 'Não foi possível atualizar os favoritos', favoritesLoadError: 'O FindBack não conseguiu ler os seus favoritos.', favoritesSaveError: 'O FindBack não conseguiu guardar a alteração. Tente novamente.',
+    purchaseTitle: 'Favoritos FindBack', purchaseBody: 'Guarde todos os locais aos quais quer regressar.',
+    unlimitedFavorites: 'Locais favoritos ilimitados', oneTimePurchase: 'Compra única', noSubscription: 'Sem subscrição',
+    buyFor: 'Comprar por {price}', storeLoading: 'A obter o preço da loja …', restorePurchases: 'Restaurar compra', notNow: 'Agora não',
+    purchaseErrorTitle: 'Não foi possível concluir a compra', purchaseErrorMessage: 'Verifique a ligação e tente novamente.',
+    restoreSuccessTitle: 'Compra restaurada', restoreSuccessMessage: 'Os Favoritos estão agora desbloqueados.',
+    restoreNotFoundTitle: 'Nenhuma compra encontrada', restoreNotFoundMessage: 'A loja não encontrou uma compra anterior de Favoritos para esta conta.',
   },
 };
 
