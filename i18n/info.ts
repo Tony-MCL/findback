@@ -100,6 +100,50 @@ const translations: Record<string, InfoTranslations> = {
     website: 'Site',
     close: 'Fechar',
   },
+  fr: {
+    infoAccessibilityLabel: 'À propos de FindBack',
+    title: 'À propos de FindBack',
+    description:
+      'FindBack enregistre une position localement sur votre appareil. Lorsque vous souhaitez y retourner, l’application ouvre la position enregistrée dans votre application de cartographie.',
+    privacyPolicy: 'Politique de confidentialité',
+    termsOfUse: 'Conditions d’utilisation',
+    contact: 'Contact',
+    website: 'Site web',
+    close: 'Fermer',
+  },
+  ja: {
+    infoAccessibilityLabel: 'FindBackについて',
+    title: 'FindBackについて',
+    description:
+      'FindBackは位置を端末内に保存します。戻りたいときに、保存した位置を地図アプリで開きます。',
+    privacyPolicy: 'プライバシーポリシー',
+    termsOfUse: '利用規約',
+    contact: 'お問い合わせ',
+    website: 'ウェブサイト',
+    close: '閉じる',
+  },
+  hi: {
+    infoAccessibilityLabel: 'FindBack के बारे में',
+    title: 'FindBack के बारे में',
+    description:
+      'FindBack आपके डिवाइस पर एक स्थान स्थानीय रूप से सहेजता है। जब आप वापस जाना चाहें, तो ऐप सहेजे गए स्थान को आपके मैप ऐप में खोलता है।',
+    privacyPolicy: 'गोपनीयता नीति',
+    termsOfUse: 'उपयोग की शर्तें',
+    contact: 'संपर्क',
+    website: 'वेबसाइट',
+    close: 'बंद करें',
+  },
+  zh: {
+    infoAccessibilityLabel: '关于 FindBack',
+    title: '关于 FindBack',
+    description:
+      'FindBack 会将一个位置保存在您的设备本地。当您想返回时，应用会在地图应用中打开已保存的位置。',
+    privacyPolicy: '隐私政策',
+    termsOfUse: '使用条款',
+    contact: '联系我们',
+    website: '网站',
+    close: '关闭',
+  },
 };
 
 export const infoText = translations[language] ?? translations.en;
