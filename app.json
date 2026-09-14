@@ -70,7 +70,11 @@
       "de": "./locales/de.json",
       "pl": "./locales/pl.json",
       "es": "./locales/es.json",
-      "pt": "./locales/pt.json"
+      "pt": "./locales/pt.json",
+      "fr": "./locales/fr.json",
+      "ja": "./locales/ja.json",
+      "hi": "./locales/hi.json",
+      "zh-Hans": "./locales/zh-Hans.json"
     }
   }
 }
