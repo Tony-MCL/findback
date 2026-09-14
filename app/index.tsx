@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { ErrorCode, isUserCancelledError, useIAP } from 'expo-iap';
 import {
   ActivityIndicator,
   Alert,
@@ -12,11 +13,18 @@ import {
   View,
 } from 'react-native';
 
+import FavoritesModal from '@/components/FavoritesModal';
+import FavoritesPurchaseModal from '@/components/FavoritesPurchaseModal';
 import InfoModal from '@/components/InfoModal';
 import { locale, t } from '@/i18n';
 import { getCurrentLocation } from '@/services/location-service';
 import { getSavedLocation, saveLocation } from '@/services/location-storage';
 import { openSavedLocationInMaps } from '@/services/map-navigation';
+import {
+  cacheFavoritesEntitlement,
+  FAVORITES_PRODUCT_ID,
+  getCachedFavoritesEntitlement,
+} from '@/services/purchase-storage';
 import type { SavedLocation } from '@/types/saved-location';
 
 const TOAST_DURATION_MS = 2500;
@@ -58,13 +66,61 @@ export default function HomeScreen() {
   const [isSaving, setIsSaving] = useState(false);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [isInfoVisible, setIsInfoVisible] = useState(false);
+  const [hasFavorites, setHasFavorites] = useState(false);
+  const [isPurchaseVisible, setIsPurchaseVisible] = useState(false);
+  const [isFavoritesVisible, setIsFavoritesVisible] = useState(false);
+  const [isPurchasing, setIsPurchasing] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(false);
+  const ownershipCheckRequested = useRef(false);
+  const restoreRequested = useRef(false);
   const toastOpacity = useRef(new Animated.Value(0)).current;
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const {
+    connected,
+    products,
+    availablePurchases,
+    fetchProducts,
+    getAvailablePurchases,
+    requestPurchase,
+    finishTransaction,
+    restorePurchases,
+  } = useIAP({
+    onPurchaseSuccess: (purchase) => {
+      if (purchase.productId !== FAVORITES_PRODUCT_ID) return;
+      void (async () => {
+        try {
+          await finishTransaction({ purchase, isConsumable: false });
+          await cacheFavoritesEntitlement(true);
+          setHasFavorites(true);
+          setIsPurchasing(false);
+          setIsPurchaseVisible(false);
+          setIsFavoritesVisible(true);
+        } catch {
+          setIsPurchasing(false);
+          Alert.alert(t('purchaseErrorTitle'), t('purchaseErrorMessage'));
+        }
+      })();
+    },
+    onPurchaseError: (error) => {
+      setIsPurchasing(false);
+      if (error.code !== ErrorCode.UserCancelled) {
+        Alert.alert(t('purchaseErrorTitle'), t('purchaseErrorMessage'));
+      }
+    },
+  });
+
+  const favoritesProduct = products.find((product) => product.id === FAVORITES_PRODUCT_ID);
 
   useEffect(() => {
     async function loadSavedLocation() {
       try {
-        setSavedLocation(await getSavedLocation());
+        const [location, entitlement] = await Promise.all([
+          getSavedLocation(),
+          getCachedFavoritesEntitlement(),
+        ]);
+        setSavedLocation(location);
+        setHasFavorites(entitlement);
       } catch {
         Alert.alert(t('loadErrorTitle'), t('loadErrorMessage'));
       } finally {
@@ -74,6 +130,35 @@ export default function HomeScreen() {
 
     void loadSavedLocation();
   }, []);
+
+  useEffect(() => {
+    if (!connected) return;
+    ownershipCheckRequested.current = true;
+    void Promise.all([
+      fetchProducts({ skus: [FAVORITES_PRODUCT_ID], type: 'in-app' }),
+      getAvailablePurchases(),
+    ]).catch(() => {
+      ownershipCheckRequested.current = false;
+    });
+  }, [connected, fetchProducts, getAvailablePurchases]);
+
+  useEffect(() => {
+    if (!ownershipCheckRequested.current) return;
+    const owned = availablePurchases.some((purchase) => purchase.productId === FAVORITES_PRODUCT_ID);
+    void cacheFavoritesEntitlement(owned);
+    setHasFavorites(owned);
+    ownershipCheckRequested.current = false;
+
+    if (restoreRequested.current) {
+      restoreRequested.current = false;
+      setIsRestoring(false);
+      Alert.alert(
+        owned ? t('restoreSuccessTitle') : t('restoreNotFoundTitle'),
+        owned ? t('restoreSuccessMessage') : t('restoreNotFoundMessage'),
+      );
+      if (owned) setIsPurchaseVisible(false);
+    }
+  }, [availablePurchases]);
 
   useEffect(() => {
     return () => {
@@ -160,6 +245,45 @@ export default function HomeScreen() {
     }
   }
 
+  function handleFavoritesPress() {
+    if (hasFavorites) setIsFavoritesVisible(true);
+    else setIsPurchaseVisible(true);
+  }
+
+  async function handlePurchase() {
+    if (!connected || !favoritesProduct || isPurchasing) return;
+    setIsPurchasing(true);
+    try {
+      await requestPurchase({
+        request: {
+          apple: { sku: FAVORITES_PRODUCT_ID },
+          google: { skus: [FAVORITES_PRODUCT_ID] },
+        },
+        type: 'in-app',
+      });
+    } catch (error) {
+      setIsPurchasing(false);
+      if (!isUserCancelledError(error)) {
+        Alert.alert(t('purchaseErrorTitle'), t('purchaseErrorMessage'));
+      }
+    }
+  }
+
+  async function handleRestore() {
+    if (!connected || isRestoring) return;
+    setIsRestoring(true);
+    restoreRequested.current = true;
+    ownershipCheckRequested.current = true;
+    try {
+      await restorePurchases();
+    } catch {
+      restoreRequested.current = false;
+      ownershipCheckRequested.current = false;
+      setIsRestoring(false);
+      Alert.alert(t('purchaseErrorTitle'), t('purchaseErrorMessage'));
+    }
+  }
+
   if (isLoading) {
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -181,6 +305,16 @@ export default function HomeScreen() {
           onPress={() => setIsInfoVisible(true)}
         >
           <Text style={styles.infoButtonText}>i</Text>
+        </Pressable>
+
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('favoritesAccessibilityLabel')}
+          hitSlop={10}
+          style={({ pressed }) => [styles.favoritesButton, pressed && styles.infoButtonPressed]}
+          onPress={handleFavoritesPress}
+        >
+          <Text style={styles.favoritesButtonText}>{hasFavorites ? '★' : '☆'}</Text>
         </Pressable>
 
         <View style={styles.pinArea}>
@@ -254,6 +388,17 @@ export default function HomeScreen() {
       </View>
 
       <InfoModal visible={isInfoVisible} onClose={() => setIsInfoVisible(false)} />
+      <FavoritesPurchaseModal
+        visible={isPurchaseVisible}
+        displayPrice={favoritesProduct?.displayPrice}
+        isConnected={connected}
+        isPurchasing={isPurchasing}
+        isRestoring={isRestoring}
+        onPurchase={() => void handlePurchase()}
+        onRestore={() => void handleRestore()}
+        onClose={() => setIsPurchaseVisible(false)}
+      />
+      <FavoritesModal visible={isFavoritesVisible} lastSaved={savedLocation} onClose={() => setIsFavoritesVisible(false)} />
     </SafeAreaView>
   );
 }
@@ -294,6 +439,21 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     textAlign: 'center',
   },
+  favoritesButton: {
+    position: 'absolute',
+    top: 70,
+    right: 22,
+    zIndex: 20,
+    width: 42,
+    height: 42,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+    borderRadius: 21,
+    backgroundColor: 'rgba(8, 46, 104, 0.28)',
+  },
+  favoritesButtonText: { color: '#FFFFFF', fontSize: 29, lineHeight: 33, textAlign: 'center' },
   pinArea: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 250 },
   pinImage: { width: '84%', maxWidth: 390, height: 360 },
   content: { gap: 14 },

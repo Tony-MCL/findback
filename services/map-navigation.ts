@@ -1,9 +1,9 @@
 import { Linking, Platform } from 'react-native';
 
-import type { SavedLocation } from '@/types/saved-location';
+type MapLocation = { latitude: number; longitude: number };
 
 export async function openSavedLocationInMaps(
-  location: SavedLocation,
+  location: MapLocation,
 ): Promise<void> {
   const coordinates = `${location.latitude},${location.longitude}`;
   const encodedLabel = encodeURIComponent('FindBack');
