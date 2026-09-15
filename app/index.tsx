@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ErrorCode, isUserCancelledError, useIAP } from 'expo-iap';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   ActivityIndicator,
   Alert,
@@ -61,6 +62,8 @@ function formatSavedAt(savedAt: string): string {
 }
 
 export default function HomeScreen() {
+  const insets = useSafeAreaInsets();
+  const topButtonOffset = Math.max(insets.top + 10, 30);
   const [savedLocation, setSavedLocation] = useState<SavedLocation | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -301,7 +304,11 @@ export default function HomeScreen() {
           accessibilityRole="button"
           accessibilityLabel={t('infoAccessibilityLabel')}
           hitSlop={12}
-          style={({ pressed }) => [styles.infoButton, pressed && styles.infoButtonPressed]}
+          style={({ pressed }) => [
+            styles.infoButton,
+            { top: topButtonOffset },
+            pressed && styles.infoButtonPressed,
+          ]}
           onPress={() => setIsInfoVisible(true)}
         >
           <Text style={styles.infoButtonText}>i</Text>
@@ -311,7 +318,11 @@ export default function HomeScreen() {
           accessibilityRole="button"
           accessibilityLabel={t('favoritesAccessibilityLabel')}
           hitSlop={10}
-          style={({ pressed }) => [styles.favoritesButton, pressed && styles.infoButtonPressed]}
+          style={({ pressed }) => [
+            styles.favoritesButton,
+            { top: topButtonOffset + 52 },
+            pressed && styles.infoButtonPressed,
+          ]}
           onPress={handleFavoritesPress}
         >
           <Text style={styles.favoritesButtonText}>{hasFavorites ? '★' : '☆'}</Text>
@@ -419,7 +430,6 @@ const styles = StyleSheet.create({
   },
   infoButton: {
     position: 'absolute',
-    top: 18,
     right: 22,
     zIndex: 20,
     width: 42,
@@ -441,7 +451,6 @@ const styles = StyleSheet.create({
   },
   favoritesButton: {
     position: 'absolute',
-    top: 70,
     right: 22,
     zIndex: 20,
     width: 42,
