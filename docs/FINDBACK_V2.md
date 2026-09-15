@@ -2,7 +2,7 @@
 
 ## Purpose
 
-FindBack v2 adds one paid feature to the existing app: **Favorites**.
+FindBack v2 adds one paid feature to the existing app: **Map markers** (`Kartmerker` in Norwegian).
 
 The app must remain a small, focused “paperclip app” that solves one problem well. Version 2 must not turn FindBack into a broad location manager.
 
@@ -23,7 +23,10 @@ The paid feature must not weaken or restrict the existing free experience.
 
 ### Product
 
-**Favorites**
+**Map markers**
+
+The original internal identifiers may continue to use `favorites` for compatibility,
+but all user-facing text must use the localized equivalent of Map markers.
 
 ### Pricing model
 
@@ -35,14 +38,14 @@ The paid feature must not weaken or restrict the existing free experience.
 - Unlimited number of favorites.
 - No lower tier with a fixed limit.
 
-The user is buying Favorites as a feature, not a plan, tier or subscription.
+The user is buying Map markers as a feature, not a plan, tier or subscription.
 
 ## Entry point
 
 - Add a star button below the information button.
-- Tapping the star opens the Favorites flow.
+- Tapping the star opens the Map markers flow.
 
-### User has not purchased Favorites
+### User has not purchased Map markers
 
 Show a compact purchase modal containing:
 
@@ -54,11 +57,11 @@ Show a compact purchase modal containing:
 - A button that starts the platform purchase flow.
 - A secondary “Not now” action.
 
-### User has purchased Favorites
+### User has purchased Map markers
 
-Open the Favorites modal.
+Open the Map markers modal.
 
-## Favorites modal
+## Map markers modal
 
 The modal should stay compact.
 
@@ -115,6 +118,12 @@ Examples:
 - Long-pressing a favorite opens name editing only.
 - The user may replace the date-and-time name with a custom name.
 - No additional edit screen, categories, tags or settings are included.
+
+### Visible actions
+
+- Each map marker has a visible overflow menu (`⋮`).
+- The menu provides Rename and Delete so the user does not have to discover hidden gestures.
+- Long press to rename and swipe to delete remain available as shortcuts.
 
 ### Swipe to delete
 
