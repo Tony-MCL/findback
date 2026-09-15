@@ -21,8 +21,8 @@ function defaultName(): string {
   }).format(new Date());
 }
 
-function SwipeRow({ item, onOpen, onRename, onDelete }: {
-  item: FavoriteLocation; onOpen: () => void; onRename: () => void; onDelete: () => void;
+function SwipeRow({ item, onOpen, onRename, onDelete, onManage }: {
+  item: FavoriteLocation; onOpen: () => void; onRename: () => void; onDelete: () => void; onManage: () => void;
 }) {
   const translateX = useRef(new Animated.Value(0)).current;
   const longPressed = useRef(false);
@@ -43,20 +43,28 @@ function SwipeRow({ item, onOpen, onRename, onDelete }: {
     <View style={styles.rowClip}>
       <View style={styles.deleteBehind}><Ionicons name="trash-outline" size={23} color="#FFFFFF" /></View>
       <Animated.View style={{ transform: [{ translateX }] }} {...panResponder.panHandlers}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityHint={t('longPressToRename')}
-          style={({ pressed }) => [styles.favoriteRow, pressed && styles.pressed]}
-          onLongPress={() => { longPressed.current = true; onRename(); }}
-          onPress={() => { if (longPressed.current) { longPressed.current = false; return; } onOpen(); }}
-        >
+        <View style={styles.favoriteRow}>
           <Ionicons name="star" size={21} color="#F4B400" />
-          <View style={styles.rowText}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityHint={t('longPressToRename')}
+            style={({ pressed }) => [styles.rowText, pressed && styles.pressed]}
+            onLongPress={() => { longPressed.current = true; onRename(); }}
+            onPress={() => { if (longPressed.current) { longPressed.current = false; return; } onOpen(); }}
+          >
             <Text style={styles.favoriteName} numberOfLines={1}>{item.name}</Text>
             <Text style={styles.coordinates}>{item.latitude.toFixed(5)}, {item.longitude.toFixed(5)}</Text>
-          </View>
-          <Ionicons name="navigate-outline" size={22} color="#0866E8" />
-        </Pressable>
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('manageFavorite')}
+            hitSlop={8}
+            style={({ pressed }) => [styles.manageButton, pressed && styles.pressed]}
+            onPress={onManage}
+          >
+            <Ionicons name="ellipsis-vertical" size={23} color="#315780" />
+          </Pressable>
+        </View>
       </Animated.View>
     </View>
   );
@@ -118,6 +126,13 @@ export default function FavoritesModal({ visible, lastSaved, onClose }: Props) {
   }
 
   function beginRename(item: FavoriteLocation) { setEditing(item); setEditName(item.name); }
+  function showFavoriteActions(item: FavoriteLocation) {
+    Alert.alert(item.name, undefined, [
+      { text: t('renameFavorite'), onPress: () => beginRename(item) },
+      { text: t('deleteFavorite'), style: 'destructive', onPress: () => { void removeFavorite(item); } },
+      { text: t('cancel'), style: 'cancel' },
+    ]);
+  }
   async function saveRename() {
     if (!editing || !editName.trim()) return;
     await persist(favorites.map((item) => item.id === editing.id ? { ...item, name: editName.trim() } : item));
@@ -162,7 +177,7 @@ export default function FavoritesModal({ visible, lastSaved, onClose }: Props) {
                 <Text style={styles.empty}>{t('favoritesEmpty')}</Text>
               ) : (
                 <ScrollView showsVerticalScrollIndicator>
-                  {favorites.map((item) => <SwipeRow key={item.id} item={item} onOpen={() => void openFavorite(item)} onRename={() => beginRename(item)} onDelete={() => void removeFavorite(item)} />)}
+                  {favorites.map((item) => <SwipeRow key={item.id} item={item} onOpen={() => void openFavorite(item)} onRename={() => beginRename(item)} onDelete={() => void removeFavorite(item)} onManage={() => showFavoriteActions(item)} />)}
                 </ScrollView>
               )}
             </View>
@@ -214,6 +229,7 @@ const styles = StyleSheet.create({
   deleteBehind: { position: 'absolute', top: 0, right: 0, bottom: 0, width: 90, alignItems: 'center', justifyContent: 'center' },
   favoriteRow: { minHeight: 65, flexDirection: 'row', alignItems: 'center', gap: 11, backgroundColor: '#F6F9FD', paddingHorizontal: 14, paddingVertical: 10 },
   rowText: { flex: 1 },
+  manageButton: { width: 38, height: 44, alignItems: 'center', justifyContent: 'center' },
   favoriteName: { color: '#123E73', fontSize: 17, fontWeight: '700' },
   coordinates: { marginTop: 3, color: '#6A8099', fontSize: 12 },
   hint: { marginTop: 4, color: '#6A8099', fontSize: 12, textAlign: 'center' },
