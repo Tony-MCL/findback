@@ -1,6 +1,7 @@
-# Favorites – store setup
+# Map markers – store setup
 
-The app code expects the same product identifier in both stores:
+The user-facing feature name is **Map markers** (`Kartmerker` in Norwegian).
+The app code keeps the original product identifier in both stores:
 
 `findback_favorites`
 
@@ -18,7 +19,7 @@ different identifier in either store without updating and rebuilding the app.
 
 Suggested review note:
 
-> Tap the star below the information button to open FindBack Favorites. The
+> Tap the star below the information button to open FindBack Map markers. The
 > purchase is a one-time, non-consumable unlock. Restore Purchase is available
 > in the same dialog. The localized price is supplied by StoreKit.
 
@@ -37,5 +38,5 @@ an EAS development/internal build or a production build after the products exist
 The store account used for testing must be a sandbox tester or Play license tester.
 
 The app caches a successful entitlement for offline use and checks ownership with
-the store on later connections. Favorites and their names/coordinates are stored
+the store on later connections. Map markers and their names/coordinates are stored
 only on the device and are not restored from the store.
